@@ -3,8 +3,7 @@
 
 
 ## Prerequisite Kafka & SchemaRegistry
-Kafka: https://kafka.apache.org/downloads
-Registry: https://github.com/confluentinc/schema-registry
+Kafka & SchemaRegistry
 
 
 ## init
