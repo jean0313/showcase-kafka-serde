@@ -1,5 +1,6 @@
 package com.demo.kafka.services;
 
+import com.demo.kafka.model.AvroPersonInfo;
 import com.demo.kafka.model.PersonInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,14 +16,14 @@ import java.util.concurrent.CompletableFuture;
 public class KafkaProducerService {
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
 
-    @Qualifier("kafkaJsonMsgTemplate")
+    @Qualifier("kafkaAvroMsgTemplate")
     @Autowired
-    private KafkaTemplate<String, PersonInfo> template;
+    private KafkaTemplate<String, AvroPersonInfo> template;
 
-    public void sendMessage(String topic, PersonInfo message) {
-        CompletableFuture<SendResult<String, PersonInfo>> send = template.send(topic, message);
+    public void sendMessage(String topic, AvroPersonInfo message) {
+        CompletableFuture<SendResult<String, AvroPersonInfo>> send = template.send(topic, message);
         try {
-            SendResult<String, PersonInfo> result = send.get();
+            SendResult<String, AvroPersonInfo> result = send.get();
             logger.info(result.toString());
         } catch (Exception e) {
             throw new RuntimeException(e);

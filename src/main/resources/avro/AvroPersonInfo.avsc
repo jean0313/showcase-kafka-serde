@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "AvroPersonInfo",
+  "namespace": "com.demo.kafka.model",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "age",
+      "type": "int"
+    }
+  ]
+}
