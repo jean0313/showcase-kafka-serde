@@ -1,5 +1,6 @@
 package com.demo.kafka.controller;
 
+import com.demo.kafka.model.PersonInfo;
 import com.demo.kafka.services.KafkaProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,8 +16,8 @@ public class KafkaProducerController {
     @Autowired
     private KafkaProducerService producer;
 
-    @GetMapping("/{msg}")
-    public void send(@PathVariable("msg") String msg) {
-        producer.sendMessage(topic, msg);
+    @GetMapping("/{name}/{age}")
+    public void send(@PathVariable("name") String name, @PathVariable("age") int age) {
+        producer.sendMessage(topic, new PersonInfo(name, age));
     }
 }
