@@ -55,6 +55,8 @@ public class KafkaConfig {
 
     @Bean
     public KafkaTemplate<String, PersonInfo> kafkaJsonMsgTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+        KafkaTemplate<String, PersonInfo> template = new KafkaTemplate<>(producerFactory());
+        template.setDefaultTopic("demo");
+        return template;
     }
 }
