@@ -1,6 +1,7 @@
 package com.demo.kafka.controller;
 
 import com.demo.kafka.model.AvroPersonInfo;
+import com.demo.kafka.model.PersonInfo;
 import com.demo.kafka.services.KafkaProducerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +17,15 @@ public class KafkaProducerController {
     @Autowired
     private KafkaProducerService producer;
 
-    @GetMapping("/{name}/{age}")
-    public void send(@PathVariable("name") String name, @PathVariable("age") int age) {
+    @GetMapping("/avro/{name}/{age}")
+    public void sendAVRO(@PathVariable("name") String name, @PathVariable("age") int age) {
         producer.sendMessage(topic, AvroPersonInfo.newBuilder().setName(name).setAge(age).build());
     }
+
+    @GetMapping("/json/{name}/{age}")
+    public void sendJson(@PathVariable("name") String name, @PathVariable("age") int age) {
+        producer.sendMessage("demo", new PersonInfo(name, age));
+    }
+
+
 }

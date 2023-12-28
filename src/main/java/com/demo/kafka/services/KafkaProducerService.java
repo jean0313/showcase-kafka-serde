@@ -1,11 +1,10 @@
 package com.demo.kafka.services;
 
-import com.demo.kafka.model.AvroPersonInfo;
-import com.demo.kafka.model.PersonInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Component;
@@ -13,20 +12,24 @@ import org.springframework.stereotype.Component;
 import java.util.concurrent.CompletableFuture;
 
 @Component
-public class KafkaProducerService {
+public class KafkaProducerService implements ApplicationContextAware {
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
 
-    @Qualifier("kafkaAvroMsgTemplate")
-    @Autowired
-    private KafkaTemplate<String, AvroPersonInfo> template;
+    private ApplicationContext ctx;
 
-    public void sendMessage(String topic, AvroPersonInfo message) {
-        CompletableFuture<SendResult<String, AvroPersonInfo>> send = template.send(topic, message);
+    public <V> void sendMessage(String topic, V message) {
+        KafkaTemplate<String, V> template = (KafkaTemplate<String, V>) ctx.getBean(topic + "Template");
+        CompletableFuture<SendResult<String, V>> send = template.send(topic, message);
         try {
-            SendResult<String, AvroPersonInfo> result = send.get();
+            SendResult<String, V> result = send.get();
             logger.info(result.toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.ctx = applicationContext;
     }
 }

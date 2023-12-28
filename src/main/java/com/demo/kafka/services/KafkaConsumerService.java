@@ -11,8 +11,14 @@ import org.springframework.stereotype.Component;
 public class KafkaConsumerService {
     private static final Logger logger = LoggerFactory.getLogger(KafkaConsumerService.class);
 
-    @KafkaListener(topics = "avro-topic", containerFactory = "kafkaListenerContainerFactory", groupId = "demo")
-    public void receiveMsg(AvroPersonInfo message) {
+    @KafkaListener(topics = "avro-topic", containerFactory = "avroListenerContainerFactory", groupId = "avro")
+    public void receiveAvro(AvroPersonInfo message) {
         logger.info("received avro msg: name={}, age={}", message.getName(), message.getAge());
     }
+
+    @KafkaListener(topics = "demo", containerFactory = "jsonListenerContainerFactory", groupId = "demo")
+    public void receiveJson(PersonInfo message) {
+        logger.info("received json msg: name={}, age={}", message.getName(), message.getAge());
+    }
+
 }
