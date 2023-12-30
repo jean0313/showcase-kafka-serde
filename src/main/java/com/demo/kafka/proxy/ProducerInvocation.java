@@ -1,14 +1,20 @@
 package com.demo.kafka.proxy;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class ProducerInvocation implements InvocationHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ProducerInvocation.class);
 
     private ApplicationContext applicationContext;
 
@@ -22,20 +28,22 @@ public class ProducerInvocation implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        System.out.println("invoked:" + method.getName());
+        logger.info("invoked: {}", method.getName());
         for (Object arg : args) {
-            System.out.println("arg type:" + arg.getClass() + ", arg value:" + arg);
+            logger.info("arg type:{}, arg value:{}", arg.getClass(), arg);
         }
         String topic = (String) args[0];
         Object message = args[1];
 
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(topic + "Template");
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
-        try {
-            SendResult<String, Object> result = send.get();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        send.whenComplete((result, ex) -> {
+            if (ex != null) {
+                logger.info("success with response: {}", result);
+            } else {
+                logger.info("failed");
+            }
+        }).get();
         return null;
     }
 }

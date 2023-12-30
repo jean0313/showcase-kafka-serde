@@ -13,12 +13,12 @@ public class KafkaConsumerService {
 
     @KafkaListener(topics = "avro-topic", containerFactory = "avroListenerContainerFactory", groupId = "avro")
     public void receiveAvro(AvroPersonInfo message) {
-        logger.info("received avro msg: name={}, age={}", message.getName(), message.getAge());
+        logger.info("{} received avro msg: name={}, age={}",Thread.currentThread().getName(), message.getName(), message.getAge());
     }
 
     @KafkaListener(topics = "demo", containerFactory = "jsonListenerContainerFactory", groupId = "demo")
     public void receiveJson(PersonInfo message) {
-        logger.info("received json msg: name={}, age={}", message.getName(), message.getAge());
+        logger.info("{} received json msg: name={}, age={}", Thread.currentThread().getName(), message.getName(), message.getAge());
     }
 
 }
