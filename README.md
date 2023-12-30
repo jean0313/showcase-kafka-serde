@@ -18,10 +18,20 @@ public class KafkaProducerService {
 ```java
 public interface KafkaProducerClient {
 
-    @ProducerHandler(topic = "sample-json-topic")
+    @ProducerHandler(
+            topic = "sample-json-topic",
+            validator = "Validator",
+            preprocessor = "Preprocessor",
+            postprocessor = "Postprocessor"
+    )
     void sendDemoMessage(PersonInfo message);
 
-    @ProducerHandler(topic = "sample-avro-topic")
+    @ProducerHandler(
+            topic = "sample-avro-topic",
+            validator = "Validator",
+            preprocessor = "Preprocessor",
+            postprocessor = "Postprocessor"
+    )
     void sendAvroMessage(AvroPersonInfo message);
 }
 ```
