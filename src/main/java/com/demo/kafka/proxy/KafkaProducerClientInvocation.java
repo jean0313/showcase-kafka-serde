@@ -39,12 +39,11 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         String postprocessorBeanName = annotation.postprocessor();
 
         // TODO preprocessor
-        Validator validator = (Validator) applicationContext.getBean(validatorBeanName);
-        validator.validate(message);
-
-        // TODO validator
         Preprocessor preprocessor = (Preprocessor) applicationContext.getBean(preprocessorBeanName);
 
+        // TODO validator
+        Validator validator = (Validator) applicationContext.getBean(validatorBeanName);
+        validator.validate(message);
 
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(topic + "Template");
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
