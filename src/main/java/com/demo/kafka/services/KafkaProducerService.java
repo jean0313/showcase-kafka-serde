@@ -18,10 +18,15 @@ public class KafkaProducerService implements ApplicationContextAware {
     private ApplicationContext ctx;
 
     public <V> void sendMessage(String topic, V message) {
+        // TODO pre-process
+
+        // TODO validate
+
         KafkaTemplate<String, V> template = (KafkaTemplate<String, V>) ctx.getBean(topic + "Template");
         CompletableFuture<SendResult<String, V>> send = template.send(topic, message);
         try {
             SendResult<String, V> result = send.get();
+            // TODO post process
             logger.info(result.toString());
         } catch (Exception e) {
             throw new RuntimeException(e);
