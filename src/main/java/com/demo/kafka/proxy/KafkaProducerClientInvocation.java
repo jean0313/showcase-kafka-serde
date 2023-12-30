@@ -9,6 +9,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
+import javax.validation.Validation;
+import javax.validation.ValidatorFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
@@ -44,6 +46,9 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         // TODO validator
         Validator validator = (Validator) applicationContext.getBean(validatorBeanName);
         validator.validate(message);
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+
 
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(topic + "Template");
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
