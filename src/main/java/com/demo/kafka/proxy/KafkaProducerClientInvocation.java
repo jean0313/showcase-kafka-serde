@@ -49,11 +49,10 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
 
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
 
-
+        // process
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(topic + "Template");
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
         logger.info("thread: {}, topic: {},  producer result: {}", Thread.currentThread().getName(), topic, send.get());
-
         // TODO postprocessor
         Postprocessor postprocessor = (Postprocessor) applicationContext.getBean(postprocessorBeanName);
         return null;
