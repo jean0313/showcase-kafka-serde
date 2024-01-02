@@ -1,7 +1,7 @@
 package com.demo.kafka.proxy;
 
-import com.demo.kafka.producer.Postprocessor;
-import com.demo.kafka.producer.Preprocessor;
+import com.demo.kafka.producer.PostProcessor;
+import com.demo.kafka.producer.PreProcessor;
 import com.demo.kafka.producer.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +41,7 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         String postprocessorBeanName = annotation.postprocessor();
 
         // TODO preprocessor
-        Preprocessor preprocessor = (Preprocessor) applicationContext.getBean(preprocessorBeanName);
+        PreProcessor preprocessor = (PreProcessor) applicationContext.getBean(preprocessorBeanName);
 
         // TODO validator
         Validator validator = (Validator) applicationContext.getBean(validatorBeanName);
@@ -54,7 +54,7 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
         logger.info("thread: {}, topic: {},  producer result: {}", Thread.currentThread().getName(), topic, send.get());
         // TODO postprocessor
-        Postprocessor postprocessor = (Postprocessor) applicationContext.getBean(postprocessorBeanName);
+        PostProcessor postprocessor = (PostProcessor) applicationContext.getBean(postprocessorBeanName);
         return null;
     }
 }

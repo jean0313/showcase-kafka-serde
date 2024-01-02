@@ -1,4 +1,4 @@
 package com.demo.kafka.producer;
 
-public interface Postprocessor {
+public interface PreProcessor {
 }
