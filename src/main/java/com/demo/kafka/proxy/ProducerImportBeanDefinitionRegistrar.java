@@ -9,7 +9,7 @@ import org.springframework.core.type.AnnotationMetadata;
 public class ProducerImportBeanDefinitionRegistrar implements ImportBeanDefinitionRegistrar {
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(Producer.class);
+        BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition(ProducerEx.class);
         GenericBeanDefinition beanDefinition = (GenericBeanDefinition) builder.getBeanDefinition();
         beanDefinition.setBeanClass(ProducerFactoryBean.class);
         registry.registerBeanDefinition("producer", beanDefinition);

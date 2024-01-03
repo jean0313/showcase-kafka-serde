@@ -1,4 +1,4 @@
-package com.demo.kafka.proxy;
+package com.demo.kafka.framework;
 
 
 import java.lang.annotation.ElementType;

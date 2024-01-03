@@ -1,32 +1,31 @@
-package com.demo.kafka.proxy;
+package com.demo.kafka.framework;
 
-import com.demo.kafka.framework.ProducerHandler;
-import com.demo.kafka.producer.PostProcessor;
-import com.demo.kafka.producer.PreProcessor;
+import com.demo.kafka.model.EventDataModel;
 import com.demo.kafka.producer.Validator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 
-public class KafkaProducerClientInvocation implements InvocationHandler {
-    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerClientInvocation.class);
+public class ProducerInvocationHandler implements InvocationHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ProducerInvocationHandler.class);
 
     private ApplicationContext applicationContext;
 
-    public KafkaProducerClientInvocation(ApplicationContext applicationContext) {
+    public ProducerInvocationHandler(ApplicationContext applicationContext) {
+        logger.info("create processor.");
         this.applicationContext = applicationContext;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        logger.debug("proxy method invoke: {}, args: {}", method.getName(), args);
         if (Object.class.equals(method.getDeclaringClass())) {
             return method.invoke(this, args);
         }
@@ -40,22 +39,34 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         String validatorBeanName = annotation.validator();
         String preprocessorBeanName = annotation.preprocessor();
         String postprocessorBeanName = annotation.postprocessor();
-
-        // TODO preprocessor
-        PreProcessor preprocessor = (PreProcessor) applicationContext.getBean(preprocessorBeanName);
+        logger.debug("proxy method, topic: {}, validator: {}, preprocessor: {}, postprocessor: {}",
+                topic,
+                validatorBeanName,
+                preprocessorBeanName,
+                postprocessorBeanName);
 
         // TODO validator
-        Validator validator = (Validator) applicationContext.getBean(validatorBeanName);
-        validator.validate(message);
+        Validator<? extends EventDataModel> validator = getValidator(validatorBeanName);
+        if (validator != null) {
+            // validate
+        }
 
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        // TODO preprocessor
 
         // process
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(topic + "Template");
         CompletableFuture<SendResult<String, Object>> send = template.send(topic, message);
-        logger.info("thread: {}, topic: {},  producer result: {}", Thread.currentThread().getName(), topic, send.get());
+//        logger.info("thread: {}, topic: {},  producer result: {}", Thread.currentThread().getName(), topic, send.get());
         // TODO postprocessor
-        PostProcessor postprocessor = (PostProcessor) applicationContext.getBean(postprocessorBeanName);
+        return send;
+    }
+
+    private Validator<? extends EventDataModel> getValidator(String beanName) {
+        try {
+            return (Validator<? extends EventDataModel>) applicationContext.getBean(beanName);
+        } catch (NoSuchBeanDefinitionException ex) {
+            logger.warn("no validator defined, beanName: {}", beanName);
+        }
         return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.demo.kafka.proxy;
 
+import com.demo.kafka.framework.Producer;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.ApplicationContext;

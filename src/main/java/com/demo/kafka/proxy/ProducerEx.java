@@ -1,5 +1,5 @@
 package com.demo.kafka.proxy;
 
-public interface Producer {
+public interface ProducerEx {
     <V> void send(String topic, V message);
 }

@@ -1,6 +1,6 @@
 package com.demo.kafka.services;
 
-import com.demo.kafka.proxy.ProducerHandler;
+import com.demo.kafka.framework.ProducerHandler;
 import com.demo.kafka.model.AvroPersonInfo;
 import com.demo.kafka.model.PersonInfo;
 
