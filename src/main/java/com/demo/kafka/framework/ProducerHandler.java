@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface ProducerHandler {
 
-    String topic();
+    String topic() default "";
 
     String validator() default "";
 

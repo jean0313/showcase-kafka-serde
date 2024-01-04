@@ -36,7 +36,7 @@ public class KafkaProducerClientInvocation implements InvocationHandler {
         if (annotation == null) {
             return method.invoke(this, args);
         }
-        String topic = annotation.topic();
+        String topic = "demo";
         String validatorBeanName = annotation.validator();
         String preprocessorBeanName = annotation.preprocessor();
         String postprocessorBeanName = annotation.postprocessor();

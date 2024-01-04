@@ -32,6 +32,7 @@ public class ProducerProxyFactory<T> implements FactoryBean<T>, ApplicationConte
         this.interfaceClass = interfaceClass;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T getObject() throws Exception {
         System.out.println("ProducerProxyFactory: create proxy object...");

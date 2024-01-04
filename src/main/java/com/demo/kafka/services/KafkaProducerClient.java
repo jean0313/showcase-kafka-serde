@@ -9,7 +9,6 @@ import com.demo.kafka.model.PersonInfo;
 public interface KafkaProducerClient {
 
     @ProducerHandler(
-            topic = "demo",
             validator = "Validator",
             preprocessor = "Preprocessor",
             postprocessor = "Postprocessor"
@@ -17,7 +16,6 @@ public interface KafkaProducerClient {
     void sendDemoMessage(PersonInfo message);
 
     @ProducerHandler(
-            topic = "avro-topic",
             validator = "Validator",
             preprocessor = "Preprocessor",
             postprocessor = "Postprocessor"
