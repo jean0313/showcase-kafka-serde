@@ -33,7 +33,7 @@ public class ProducerInvocationHandler implements InvocationHandler {
 
         ProducerHandler annotation = method.getAnnotation(ProducerHandler.class);
         if (annotation == null) {
-            return method.invoke(this, args);
+            throw new RuntimeException("producer method[" + method.getName() + "] must have ProducerHandler annotation");
         }
         String topic = annotation.topic();
         String validatorBeanName = annotation.validator();

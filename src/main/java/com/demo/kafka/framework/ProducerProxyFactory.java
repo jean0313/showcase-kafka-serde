@@ -35,10 +35,7 @@ public class ProducerProxyFactory<T> implements FactoryBean<T>, ApplicationConte
     @Override
     public T getObject() throws Exception {
         System.out.println("ProducerProxyFactory: create proxy object...");
-        return (T) Proxy.newProxyInstance(
-                this.getClass().getClassLoader(),
-                new Class[]{interfaceClass},
-                new ProducerInvocationHandler(applicationContext));
+        return (T) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[]{interfaceClass}, new ProducerInvocationHandler(applicationContext));
     }
 
     @Override
