@@ -4,7 +4,7 @@ import com.demo.kafka.framework.ProducerScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@ProducerScan("com.demo.kafka")
+@ProducerScan("com.demo.kafka.framework.producer")
 @SpringBootApplication
 public class KafkaDemosApplication {
 

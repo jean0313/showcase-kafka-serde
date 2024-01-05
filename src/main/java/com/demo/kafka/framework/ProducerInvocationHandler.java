@@ -11,6 +11,8 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -46,16 +48,20 @@ public class ProducerInvocationHandler implements InvocationHandler {
 
         // process
         KafkaTemplate<String, Object> template = (KafkaTemplate<String, Object>) applicationContext.getBean(model.getTopic() + "Template");
-        CompletableFuture<SendResult<String, Object>> send = template.send(model.getMessage());
+        ListenableFuture<SendResult<String, Object>> send = template.send(model.getMessage());
         logger.info("thread: {}, topic: {},  producer result: {}", Thread.currentThread().getName(), model.getTopic(), send.get());
 
         String handlerName = model.getPostprocessor();
         ResponseHandler handler = (ResponseHandler) getBean(handlerName);
-        send.whenComplete((r, ex) -> {
-            if (ex == null) {
-                handler.onSuccess(r);
-            } else {
-                handler.onFailure(ex);
+        send.addCallback(new ListenableFutureCallback<SendResult<String, Object>>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                handler.onFailure(throwable);
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, Object> stringObjectSendResult) {
+                handler.onSuccess(stringObjectSendResult);
             }
         });
         if (args.length == 2) {
@@ -81,11 +87,12 @@ public class ProducerInvocationHandler implements InvocationHandler {
 
         String topic = "";
         Object topicHeader = message.getHeaders().get(KafkaHeaders.TOPIC);
-        if (topicHeader instanceof byte[] bts) {
+        if (topicHeader instanceof byte[]) {
+            byte[] bts = (byte[]) topicHeader;
             topic = new String(bts, StandardCharsets.UTF_8);
         }
-        else if (topicHeader instanceof String t) {
-            topic = t;
+        else if (topicHeader instanceof String) {
+            topic = (String) topicHeader;
         }
 
         return new KafkaProducerModel<>(message,
