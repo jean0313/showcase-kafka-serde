@@ -10,7 +10,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -85,17 +87,18 @@ public class ProducerInvocationHandler implements InvocationHandler {
                 annotation.preprocessor(),
                 annotation.postprocessor());
 
-        String topic = "";
-        Object topicHeader = message.getHeaders().get(KafkaHeaders.TOPIC);
-        if (topicHeader instanceof byte[]) {
-            byte[] bts = (byte[]) topicHeader;
-            topic = new String(bts, StandardCharsets.UTF_8);
-        }
-        else if (topicHeader instanceof String) {
-            topic = (String) topicHeader;
+        String topic = annotation.topic();
+        if (!StringUtils.hasText(topic)) {
+            Object topicHeader = message.getHeaders().get(KafkaHeaders.TOPIC);
+            if (topicHeader instanceof byte[]) {
+                byte[] bts = (byte[]) topicHeader;
+                topic = new String(bts, StandardCharsets.UTF_8);
+            } else if (topicHeader instanceof String) {
+                topic = (String) topicHeader;
+            }
         }
 
-        return new KafkaProducerModel<>(message,
+        return new KafkaProducerModel<>(MessageBuilder.fromMessage(message).setHeader(KafkaHeaders.TOPIC, topic).build(),
                 annotation.validator(),
                 annotation.preprocessor(),
                 annotation.postprocessor(),

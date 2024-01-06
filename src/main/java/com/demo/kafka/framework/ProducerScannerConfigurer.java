@@ -20,7 +20,7 @@ public class ProducerScannerConfigurer implements BeanDefinitionRegistryPostProc
 
     private Class<?> markerInterface;
 
-    private Class<? extends ProducerProxyFactory> factoryBeanClass;
+    private Class<? extends ProducerProxyFactory> factoryBeanClass = ProducerProxyFactory.class;
 
     private boolean processPropertyPlaceHolders;
 

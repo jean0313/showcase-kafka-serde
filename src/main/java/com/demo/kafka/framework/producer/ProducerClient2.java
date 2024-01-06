@@ -6,6 +6,7 @@ import com.demo.kafka.model.AvroPersonInfo;
 import com.demo.kafka.model.PersonInfo;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -13,10 +14,11 @@ import java.util.concurrent.CompletableFuture;
 public interface ProducerClient2 {
 
     @ProducerHandler(
+            topic = "avro-topic",
             validator = "Validator",
             preprocessor = "Preprocessor",
             postprocessor = "avroPersonInfoResponseHandler"
     )
-    CompletableFuture<SendResult<String, AvroPersonInfo>> sendAvroMessage(Message<AvroPersonInfo> message);
+    ListenableFuture<SendResult<String, AvroPersonInfo>> sendAvroMessage(Message<AvroPersonInfo> message);
 
 }
