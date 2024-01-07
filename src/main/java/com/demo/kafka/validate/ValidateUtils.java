@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
 import java.util.Set;
 
 public class ValidateUtils {
@@ -20,18 +18,12 @@ public class ValidateUtils {
     }
 
 
-    public static void main(String[] args) {
-        Dog pop = new Dog("pop", 5);
-        validate(pop);
-    }
-
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Dog {
-        @Size(max = 10, min = 3)
+        @NoNumbers
         private String name;
-        @Max(10)
         private int age;
     }
 }

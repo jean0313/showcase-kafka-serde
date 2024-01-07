@@ -71,7 +71,7 @@ public class KafkaProducerController implements ApplicationContextAware {
     @GetMapping("/validate")
     public void verify() {
         Validator validator = validatorFactoryBean.getValidator();
-        ValidateUtils.Dog pop = new ValidateUtils.Dog("pop", 12);
+        ValidateUtils.Dog pop = new ValidateUtils.Dog("pop2", 12);
         Set<ConstraintViolation<ValidateUtils.Dog>> validate = validator.validate(pop);
         System.out.println(validate);
     }
